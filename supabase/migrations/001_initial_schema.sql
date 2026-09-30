@@ -109,6 +109,22 @@ CREATE TABLE IF NOT EXISTS public.campus_settings (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 9. CAMPUS EVENTS
+CREATE TABLE IF NOT EXISTS public.events (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  date TEXT NOT NULL,
+  time TEXT,
+  location_id TEXT REFERENCES public.locations(id) ON DELETE SET NULL,
+  location_name TEXT NOT NULL,
+  category TEXT NOT NULL DEFAULT 'seminar' CHECK (category IN ('tech', 'sports', 'cultural', 'academic', 'placement', 'seminar')),
+  organizer TEXT,
+  is_upcoming BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Indexes for lightning fast spatial & category search
 CREATE INDEX IF NOT EXISTS idx_locations_category ON public.locations(category);
 CREATE INDEX IF NOT EXISTS idx_locations_coords ON public.locations(latitude, longitude);
@@ -128,6 +144,7 @@ ALTER TABLE public.path_nodes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.path_edges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.saved_locations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.campus_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.events ENABLE ROW LEVEL SECURITY;
 
 -- Helper to check if current user is admin/editor
 CREATE OR REPLACE FUNCTION public.is_admin()
@@ -148,6 +165,7 @@ CREATE POLICY "Public Read Locations" ON public.locations FOR SELECT USING (is_a
 CREATE POLICY "Public Read Path Nodes" ON public.path_nodes FOR SELECT USING (true);
 CREATE POLICY "Public Read Path Edges" ON public.path_edges FOR SELECT USING (true);
 CREATE POLICY "Public Read Campus Settings" ON public.campus_settings FOR SELECT USING (true);
+CREATE POLICY "Public Read Events" ON public.events FOR SELECT USING (true);
 
 -- Authenticated Users: Saved Locations
 CREATE POLICY "Users read their own saved locations"

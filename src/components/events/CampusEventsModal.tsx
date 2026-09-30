@@ -20,6 +20,7 @@ interface CampusEventsModalProps {
   locations: CampusLocation[];
   onNavigateToLocation: (location: CampusLocation) => void;
   lang: 'en' | 'ml';
+  events?: CampusEvent[];
 }
 
 export const CampusEventsModal: React.FC<CampusEventsModalProps> = ({
@@ -27,9 +28,12 @@ export const CampusEventsModal: React.FC<CampusEventsModalProps> = ({
   onClose,
   locations,
   onNavigateToLocation,
-  lang
+  lang,
+  events
 }) => {
   if (!isOpen) return null;
+
+  const eventList = events || SEED_CAMPUS_EVENTS;
 
   const getCategoryBadge = (category: CampusEvent['category']) => {
     switch (category) {
@@ -99,7 +103,18 @@ export const CampusEventsModal: React.FC<CampusEventsModalProps> = ({
 
         {/* Events List */}
         <div className="p-5 overflow-y-auto space-y-4">
-          {SEED_CAMPUS_EVENTS.map(event => {
+          {eventList.length === 0 ? (
+            <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+              <Calendar className="w-10 h-10 mx-auto mb-3 opacity-30" />
+              <p className="text-sm font-semibold">
+                {lang === 'ml' ? 'വരാനിരിക്കുന്ന ഇവന്റുകൾ ഷെഡ്യൂൾ ചെയ്തിട്ടില്ല' : 'No upcoming campus events scheduled'}
+              </p>
+              <p className="text-xs text-gray-400 mt-1">
+                {lang === 'ml' ? 'സുപാബേസ് ഡാറ്റാബേസിൽ നിന്നോ അഡ്മിൻ വഴിയോ പുതിയ ഇവന്റുകൾ ചേർക്കാവുന്നതാണ്' : 'Events added to Supabase database will appear here automatically.'}
+              </p>
+            </div>
+          ) : (
+            eventList.map(event => {
             const badge = getCategoryBadge(event.category);
             return (
               <div
@@ -145,7 +160,7 @@ export const CampusEventsModal: React.FC<CampusEventsModalProps> = ({
                 </div>
               </div>
             );
-          })}
+          }))}
         </div>
       </div>
     </div>

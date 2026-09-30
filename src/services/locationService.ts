@@ -1,5 +1,5 @@
-import { CampusLocation, CampusBuilding, PathNode, PathEdge } from '../types';
-import { SEED_LOCATIONS, SEED_BUILDINGS, SEED_NODES, SEED_EDGES } from '../data/seedCampusData';
+import { CampusLocation, CampusBuilding, PathNode, PathEdge, CampusEvent } from '../types';
+import { SEED_LOCATIONS, SEED_BUILDINGS, SEED_NODES, SEED_EDGES, SEED_CAMPUS_EVENTS } from '../data/seedCampusData';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 const STORAGE_KEYS = {
@@ -7,7 +7,8 @@ const STORAGE_KEYS = {
   BUILDINGS: 'ilahianav_buildings_v1',
   NODES: 'ilahianav_nodes_v1',
   EDGES: 'ilahianav_edges_v1',
-  SAVED: 'ilahianav_saved_ids_v1'
+  SAVED: 'ilahianav_saved_ids_v1',
+  EVENTS: 'ilahianav_events_v1'
 };
 
 /**
@@ -166,7 +167,45 @@ export const locationService = {
     return { nodes, edges };
   },
 
-  // 4. Admin CRUD Operations for Locations
+  // 4. Get all Campus Events (from Supabase or local cache/seed)
+  async getEvents(): Promise<CampusEvent[]> {
+    if (isSupabaseConfigured) {
+      try {
+        const { data, error } = await supabase
+          .from('events')
+          .select('*')
+          .order('date');
+        if (!error && data && data.length > 0) {
+          return data.map((item: any) => ({
+            id: item.id,
+            title: item.title,
+            description: item.description,
+            date: item.date,
+            time: item.time,
+            locationId: item.location_id,
+            locationName: item.location_name,
+            category: item.category,
+            organizer: item.organizer,
+            isUpcoming: item.is_upcoming ?? true
+          }));
+        }
+      } catch (err) {
+        console.warn('Supabase events fetch failed, falling back', err);
+      }
+    }
+
+    const cached = localStorage.getItem(STORAGE_KEYS.EVENTS);
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch {
+        // fallback
+      }
+    }
+    return SEED_CAMPUS_EVENTS;
+  },
+
+  // 5. CRUD Operations for Locations
   async saveLocation(location: CampusLocation): Promise<CampusLocation> {
     const locations = await this.getLocations();
     const index = locations.findIndex(l => l.id === location.id);

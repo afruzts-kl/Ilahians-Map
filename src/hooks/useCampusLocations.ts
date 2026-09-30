@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { CampusLocation, CampusBuilding, PathNode, PathEdge, LocationCategory } from '../types';
+import { CampusLocation, CampusBuilding, PathNode, PathEdge, CampusEvent, LocationCategory } from '../types';
 import { locationService } from '../services/locationService';
 
 export function useCampusLocations() {
@@ -7,6 +7,7 @@ export function useCampusLocations() {
   const [buildings, setBuildings] = useState<CampusBuilding[]>([]);
   const [pathNodes, setPathNodes] = useState<PathNode[]>([]);
   const [pathEdges, setPathEdges] = useState<PathEdge[]>([]);
+  const [events, setEvents] = useState<CampusEvent[]>([]);
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -16,15 +17,17 @@ export function useCampusLocations() {
     setIsLoading(true);
     setError(null);
     try {
-      const [locs, blds, graph] = await Promise.all([
+      const [locs, blds, graph, evts] = await Promise.all([
         locationService.getLocations(),
         locationService.getBuildings(),
-        locationService.getRoutingGraph()
+        locationService.getRoutingGraph(),
+        locationService.getEvents()
       ]);
       setLocations(locs);
       setBuildings(blds);
       setPathNodes(graph.nodes);
       setPathEdges(graph.edges);
+      setEvents(evts);
       setSavedIds(locationService.getSavedLocationIds());
     } catch (err: any) {
       setError('Unable to load campus data. Please try again.');
@@ -93,6 +96,7 @@ export function useCampusLocations() {
     buildings,
     pathNodes,
     pathEdges,
+    events,
     savedIds,
     savedLocations,
     locationMap,

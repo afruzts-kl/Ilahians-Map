@@ -30,6 +30,7 @@ export default function App() {
     buildings,
     pathNodes,
     pathEdges,
+    events,
     savedIds,
     savedLocations,
     isLoading,
@@ -323,6 +324,7 @@ export default function App() {
         locations={locations}
         onNavigateToLocation={handleNavigateToLocation}
         lang={lang}
+        events={events}
       />
     </div>
   );
