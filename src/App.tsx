@@ -10,8 +10,10 @@ import { LocationDetails } from './components/locations/LocationDetails';
 import { NavigationPanel } from './components/navigation/NavigationPanel';
 import { Header } from './components/ui/Header';
 import { BottomNav, ActiveTab } from './components/ui/BottomNav';
+import { useLanguage } from './hooks/useLanguage';
 import { OfflineBanner } from './components/ui/OfflineBanner';
 import { CampusTourModal } from './components/tour/CampusTourModal';
+import { CampusEventsModal } from './components/events/CampusEventsModal';
 import { AdminLoginModal } from './components/admin/AdminLoginModal';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Explore } from './pages/Explore';
@@ -22,6 +24,8 @@ import { Crosshair, Check, X } from 'lucide-react';
 export default function App() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === 'dark';
+  const { lang, toggleLanguage, t } = useLanguage();
+  const [isEventsOpen, setIsEventsOpen] = useState(false);
 
   // Campus Data
   const {
@@ -143,6 +147,9 @@ export default function App() {
         }}
         onCenterUser={startTracking}
         isAdminLoggedIn={isAdminLoggedIn}
+        lang={lang}
+        onToggleLanguage={toggleLanguage}
+        onOpenEvents={() => setIsEventsOpen(true)}
       />
 
       {/* Admin Map Coordinate Editor Floating Banner */}
@@ -260,6 +267,7 @@ export default function App() {
                     onClose={clearRoute}
                     routingError={routingError}
                     onSelectStartGate={setLocationToMainGate}
+                    lang={lang}
                   />
                 </div>
               )}
@@ -358,6 +366,7 @@ export default function App() {
                   onClose={clearRoute}
                   routingError={routingError}
                   onSelectStartGate={setLocationToMainGate}
+                  lang={lang}
                 />
               </div>
             )}
@@ -412,6 +421,15 @@ export default function App() {
         onRefreshData={refreshCampusData}
         onLogout={handleAdminLogout}
         onOpenMapEditor={handleOpenMapEditor}
+      />
+
+      {/* Campus Events Modal */}
+      <CampusEventsModal
+        isOpen={isEventsOpen}
+        onClose={() => setIsEventsOpen(false)}
+        locations={locations}
+        onNavigateToLocation={handleNavigateToLocation}
+        lang={lang}
       />
     </div>
   );

@@ -6,7 +6,9 @@ import {
   ShieldCheck, 
   MapPin, 
   Navigation,
-  Sparkles
+  Sparkles,
+  Calendar,
+  Languages
 } from 'lucide-react';
 import { UserLocationState } from '../../types';
 
@@ -18,6 +20,9 @@ interface HeaderProps {
   onOpenAdmin: () => void;
   onCenterUser: () => void;
   isAdminLoggedIn?: boolean;
+  lang: 'en' | 'ml';
+  onToggleLanguage: () => void;
+  onOpenEvents: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -27,7 +32,10 @@ export const Header: React.FC<HeaderProps> = ({
   onStartTour,
   onOpenAdmin,
   onCenterUser,
-  isAdminLoggedIn = false
+  isAdminLoggedIn = false,
+  lang,
+  onToggleLanguage,
+  onOpenEvents
 }) => {
   return (
     <header className="w-full bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200/80 dark:border-gray-800 px-4 py-2.5 z-30 transition-colors">
@@ -74,6 +82,25 @@ export const Header: React.FC<HeaderProps> = ({
               <span>Location off</span>
             </span>
           )}
+
+          {/* Language Switcher (EN | മലയാളം) */}
+          <button
+            onClick={onToggleLanguage}
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            title="Switch Language / ഭാഷ മാറ്റുക"
+          >
+            <Languages className="w-3.5 h-3.5 text-campus-600 dark:text-campus-400" />
+            <span>{lang === 'en' ? 'മലയാളം' : 'English'}</span>
+          </button>
+
+          {/* Campus Events Modal Button */}
+          <button
+            onClick={onOpenEvents}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-900/60 text-xs font-semibold hover:bg-purple-100 dark:hover:bg-purple-900/50 transition-colors shadow-sm"
+          >
+            <Calendar className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+            <span>{lang === 'ml' ? 'ഇവന്റുകൾ' : 'Events'}</span>
+          </button>
 
           {/* New to Campus Guided Tour Button */}
           <button

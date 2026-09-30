@@ -1,4 +1,4 @@
-import { CampusLocation, CampusBuilding, PathNode, PathEdge } from '../types';
+import { CampusLocation, CampusBuilding, PathNode, PathEdge, CampusEvent } from '../types';
 
 /**
  * Verified Initial Campus Reference Data for Ilahia College (ICET)
@@ -503,5 +503,56 @@ export const CAMPUS_TOUR_STEPS = [
     locationId: "loc-playground",
     description: "Full-size football ground, cricket pitch, and athletic tracks where college sports fests, tournaments, and evening games take place.",
     tip: "Check sports room for equipment issue after 4:00 PM."
+  }
+];
+
+export const SEED_CAMPUS_EVENTS: CampusEvent[] = [
+  {
+    id: "evt-techfest-2026",
+    title: "ILAHIA TECHFEST 2026: 24h Hackathon",
+    description: "Annual national student hackathon on Artificial Intelligence, Web3, and Mobile Computing.",
+    date: "OCTOBER 15, 2026",
+    time: "09:00 AM - 05:00 PM",
+    locationId: "loc-cse-lab-1",
+    locationName: "CSE Software Development Lab (Lab 1)",
+    category: "tech",
+    organizer: "Computer Science & Engineering Association",
+    isUpcoming: true
+  },
+  {
+    id: "evt-sports-meet",
+    title: "All-Kerala Inter-Collegiate Athletics Meet",
+    description: "Annual university athletic championship featuring 100m sprint, relay, long jump, and football finals.",
+    date: "OCTOBER 22, 2026",
+    time: "08:30 AM - 06:00 PM",
+    locationId: "loc-playground",
+    locationName: "Ilahia College Play Ground",
+    category: "sports",
+    organizer: "Department of Physical Education",
+    isUpcoming: true
+  },
+  {
+    id: "evt-placement-drive",
+    title: "TCS & Infosys Mega Campus Recruitment Drive",
+    description: "Aptitude assessments, coding round, and technical interviews for final year engineering students.",
+    date: "NOVEMBER 04, 2026",
+    time: "08:30 AM - 04:30 PM",
+    locationId: "loc-admin-office",
+    locationName: "ICET Main Academic & Admin Block",
+    category: "placement",
+    organizer: "Career Guidance & Placement Cell (CGPC)",
+    isUpcoming: true
+  },
+  {
+    id: "evt-robotics-expo",
+    title: "RoboVenture 2026: IoT & Drone Expo",
+    description: "Live demonstration of solar UAV drones, autonomous rovers, and smart grid automation projects.",
+    date: "NOVEMBER 12, 2026",
+    time: "10:00 AM - 04:00 PM",
+    locationId: "loc-eee-dept",
+    locationName: "Electrical Department Block (EEE)",
+    category: "tech",
+    organizer: "EEE Students Association",
+    isUpcoming: true
   }
 ];

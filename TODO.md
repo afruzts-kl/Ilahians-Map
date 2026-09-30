@@ -72,3 +72,10 @@
 - [x] Create `.env.example` with clear instructions <!-- id: 11.2 -->
 - [x] Write detailed `README.md` with full setup, architecture, and admin guide <!-- id: 11.3 -->
 - [x] Final end-to-end functionality walkthrough and report <!-- id: 11.4 -->
+
+## 12. Vercel Deployment & Advanced Features (Malayalam, Voice Guidance, Events)
+- [ ] Create `vercel.json` SPA configuration for seamless Vercel deployment <!-- id: 12.1 -->
+- [ ] Implement Malayalam language support (English / മലയാളം language toggle & dictionary) <!-- id: 12.2 -->
+- [ ] Implement Web Speech API Voice Guidance (`speechSynthesis`) with audio toggle <!-- id: 12.3 -->
+- [ ] Implement Campus Events Navigation (tech fests, symposiums, sports with direct route pins) <!-- id: 12.4 -->
+- [ ] Verify build and test Vercel readiness <!-- id: 12.5 -->

@@ -114,3 +114,16 @@ export interface AdminUser {
   email: string;
   role: 'superadmin' | 'editor';
 }
+
+export interface CampusEvent {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  locationId: string;
+  locationName: string;
+  category: 'tech' | 'sports' | 'cultural' | 'academic' | 'placement';
+  organizer: string;
+  isUpcoming: boolean;
+}
