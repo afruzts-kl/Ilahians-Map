@@ -14,12 +14,9 @@ import { useLanguage } from './hooks/useLanguage';
 import { OfflineBanner } from './components/ui/OfflineBanner';
 import { CampusTourModal } from './components/tour/CampusTourModal';
 import { CampusEventsModal } from './components/events/CampusEventsModal';
-import { AdminLoginModal } from './components/admin/AdminLoginModal';
-import { AdminDashboard } from './components/admin/AdminDashboard';
 import { Explore } from './pages/Explore';
 import { Saved } from './pages/Saved';
 import { Profile } from './pages/Profile';
-import { Crosshair, Check, X } from 'lucide-react';
 
 export default function App() {
   const { theme, setTheme } = useTheme();
@@ -77,15 +74,6 @@ export default function App() {
 
   // Modals & Panels
   const [isTourOpen, setIsTourOpen] = useState(false);
-  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
-  const [isAdminDashboardOpen, setIsAdminDashboardOpen] = useState(false);
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
-    return localStorage.getItem('ilahianav_admin_session') === 'true';
-  });
-
-  // Admin Map Coordinate Editor Mode
-  const [isMapEditorMode, setIsMapEditorMode] = useState(false);
-  const [editorMarker, setEditorMarker] = useState<{ lat: number; lng: number } | null>(null);
 
   // Handlers
   const handleSelectLocation = useCallback((loc: CampusLocation) => {
@@ -103,30 +91,6 @@ export default function App() {
     setSelectedLocation(null);
   };
 
-  const handleAdminLoginSuccess = () => {
-    setIsAdminLoggedIn(true);
-    setIsAdminDashboardOpen(true);
-  };
-
-  const handleAdminLogout = () => {
-    localStorage.removeItem('ilahianav_admin_session');
-    setIsAdminLoggedIn(false);
-    setIsAdminDashboardOpen(false);
-  };
-
-  const handleOpenMapEditor = (initialCoords?: { lat: number; lng: number }) => {
-    setIsAdminDashboardOpen(false);
-    setIsMapEditorMode(true);
-    setEditorMarker(initialCoords || { lat: 10.02835, lng: 76.59715 });
-    setActiveTab('map');
-  };
-
-  const handleMapClick = (coords: { lat: number; lng: number }) => {
-    if (isMapEditorMode) {
-      setEditorMarker(coords);
-    }
-  };
-
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-gray-100 dark:bg-navy-900 font-sans text-gray-900 dark:text-gray-100">
       {/* Offline Alert Banner */}
@@ -138,50 +102,11 @@ export default function App() {
         darkMode={isDark}
         onToggleDarkMode={() => setTheme(isDark ? 'light' : 'dark')}
         onStartTour={() => setIsTourOpen(true)}
-        onOpenAdmin={() => {
-          if (isAdminLoggedIn) {
-            setIsAdminDashboardOpen(true);
-          } else {
-            setIsAdminLoginOpen(true);
-          }
-        }}
         onCenterUser={startTracking}
-        isAdminLoggedIn={isAdminLoggedIn}
         lang={lang}
         onToggleLanguage={toggleLanguage}
         onOpenEvents={() => setIsEventsOpen(true)}
       />
-
-      {/* Admin Map Coordinate Editor Floating Banner */}
-      {isMapEditorMode && (
-        <div className="bg-campus-700 text-white px-4 py-2.5 shadow-md flex items-center justify-between text-xs z-30 animate-fade-in">
-          <div className="flex items-center gap-2">
-            <Crosshair className="w-4 h-4 animate-spin" />
-            <span className="font-semibold">
-              Admin Map Editor Active — Click anywhere or drag marker to set coordinates (
-              {editorMarker ? `${editorMarker.lat.toFixed(5)}, ${editorMarker.lng.toFixed(5)}` : 'Select a point'}
-              )
-            </span>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setIsMapEditorMode(false);
-                setIsAdminDashboardOpen(true);
-              }}
-              className="px-2.5 py-1 bg-white text-campus-800 rounded-lg font-bold hover:bg-gray-100"
-            >
-              Done
-            </button>
-            <button
-              onClick={() => setIsMapEditorMode(false)}
-              className="p-1 rounded-lg hover:bg-campus-800 text-white/80 hover:text-white"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Main Content Area */}
       <div className="flex-1 relative overflow-hidden flex flex-col md:flex-row">
@@ -219,17 +144,8 @@ export default function App() {
               onResetData={() => {
                 refreshCampusData();
               }}
-              onOpenAdmin={() => {
-                if (isAdminLoggedIn) {
-                  setIsAdminDashboardOpen(true);
-                } else {
-                  setIsAdminLoginOpen(true);
-                }
-              }}
               onStartTour={() => setIsTourOpen(true)}
               onSimulateGate={setLocationToMainGate}
-              isAdminLoggedIn={isAdminLoggedIn}
-              onAdminLogout={handleAdminLogout}
             />
           </div>
         )}
@@ -344,9 +260,6 @@ export default function App() {
               userLocation={userLocation}
               route={currentRoute}
               onSelectLocation={handleSelectLocation}
-              onMapClick={handleMapClick}
-              isMapEditorMode={isMapEditorMode}
-              editorMarker={editorMarker}
               isDark={isDark}
             />
 
@@ -401,26 +314,6 @@ export default function App() {
         onClose={() => setIsTourOpen(false)}
         onNavigateToLocation={handleNavigateToLocation}
         locations={locations}
-      />
-
-      {/* Admin Login Modal */}
-      <AdminLoginModal
-        isOpen={isAdminLoginOpen}
-        onClose={() => setIsAdminLoginOpen(false)}
-        onLoginSuccess={handleAdminLoginSuccess}
-      />
-
-      {/* Admin Dashboard */}
-      <AdminDashboard
-        isOpen={isAdminDashboardOpen}
-        onClose={() => setIsAdminDashboardOpen(false)}
-        locations={locations}
-        buildings={buildings}
-        pathNodes={pathNodes}
-        pathEdges={pathEdges}
-        onRefreshData={refreshCampusData}
-        onLogout={handleAdminLogout}
-        onOpenMapEditor={handleOpenMapEditor}
       />
 
       {/* Campus Events Modal */}

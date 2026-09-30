@@ -3,7 +3,6 @@ import {
   Compass, 
   Moon, 
   Sun, 
-  ShieldCheck, 
   MapPin, 
   Navigation,
   Sparkles,
@@ -17,9 +16,7 @@ interface HeaderProps {
   darkMode: boolean;
   onToggleDarkMode: () => void;
   onStartTour: () => void;
-  onOpenAdmin: () => void;
   onCenterUser: () => void;
-  isAdminLoggedIn?: boolean;
   lang: 'en' | 'ml';
   onToggleLanguage: () => void;
   onOpenEvents: () => void;
@@ -30,9 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   darkMode,
   onToggleDarkMode,
   onStartTour,
-  onOpenAdmin,
   onCenterUser,
-  isAdminLoggedIn = false,
   lang,
   onToggleLanguage,
   onOpenEvents
@@ -119,21 +114,6 @@ export const Header: React.FC<HeaderProps> = ({
             className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
           >
             {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-          </button>
-
-          {/* Admin Button */}
-          <button
-            onClick={onOpenAdmin}
-            aria-label="Admin Portal"
-            className={`p-2 rounded-xl border transition-colors flex items-center gap-1 text-xs font-medium ${
-              isAdminLoggedIn
-                ? 'bg-campus-50 dark:bg-campus-950/40 text-campus-700 dark:text-campus-300 border-campus-300 dark:border-campus-800'
-                : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-            }`}
-            title={isAdminLoggedIn ? "Admin Logged In" : "Admin Login"}
-          >
-            <ShieldCheck className="w-4 h-4" />
-            <span className="hidden md:inline">{isAdminLoggedIn ? "Admin" : "Admin"}</span>
           </button>
         </div>
       </div>

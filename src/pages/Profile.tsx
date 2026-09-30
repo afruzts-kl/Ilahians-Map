@@ -3,7 +3,6 @@ import {
   Building2, 
   MapPin, 
   Navigation, 
-  ShieldCheck, 
   Sparkles, 
   RotateCcw, 
   PhoneCall, 
@@ -17,21 +16,15 @@ import { UserLocationState } from '../types';
 interface ProfileProps {
   userLocation: UserLocationState;
   onResetData: () => void;
-  onOpenAdmin: () => void;
   onStartTour: () => void;
   onSimulateGate: () => void;
-  isAdminLoggedIn: boolean;
-  onAdminLogout: () => void;
 }
 
 export const Profile: React.FC<ProfileProps> = ({
   userLocation,
   onResetData,
-  onOpenAdmin,
   onStartTour,
-  onSimulateGate,
-  isAdminLoggedIn,
-  onAdminLogout
+  onSimulateGate
 }) => {
   return (
     <div className="w-full h-full overflow-y-auto pb-24 md:pb-12 bg-gray-50 dark:bg-navy-900 transition-colors">
@@ -148,49 +141,6 @@ export const Profile: React.FC<ProfileProps> = ({
               <span className="font-medium text-gray-800 dark:text-gray-200">College Office Telephone</span>
               <span className="font-bold text-gray-700 dark:text-gray-300">0485-2549145</span>
             </div>
-          </div>
-        </div>
-
-        {/* Admin Portal Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-sm text-gray-900 dark:text-white">Admin Management</h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  {isAdminLoggedIn
-                    ? 'Logged in as Campus Administrator'
-                    : 'Manage locations, walking paths, and campus coordinates'}
-                </p>
-              </div>
-            </div>
-
-            {isAdminLoggedIn ? (
-              <div className="flex gap-2">
-                <button
-                  onClick={onOpenAdmin}
-                  className="py-2 px-3 bg-campus-600 hover:bg-campus-700 text-white rounded-xl text-xs font-semibold"
-                >
-                  Dashboard
-                </button>
-                <button
-                  onClick={onAdminLogout}
-                  className="py-2 px-3 border border-gray-200 dark:border-gray-700 text-red-500 rounded-xl text-xs font-semibold hover:bg-red-50 dark:hover:bg-red-950/30"
-                >
-                  Logout
-                </button>
-              </div>
-            ) : (
-              <button
-                onClick={onOpenAdmin}
-                className="py-2 px-4 bg-gray-900 dark:bg-gray-100 hover:bg-gray-800 dark:hover:bg-white text-white dark:text-gray-900 rounded-xl text-xs font-semibold shadow-sm transition-all"
-              >
-                Login
-              </button>
-            )}
           </div>
         </div>
 

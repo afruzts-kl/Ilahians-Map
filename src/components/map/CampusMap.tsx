@@ -19,9 +19,6 @@ interface CampusMapProps {
   userLocation: UserLocationState;
   route: CalculatedRoute | null;
   onSelectLocation: (location: CampusLocation) => void;
-  onMapClick?: (coords: { lat: number; lng: number }) => void;
-  isMapEditorMode?: boolean;
-  editorMarker?: { lat: number; lng: number } | null;
   isDark?: boolean;
 }
 
@@ -32,9 +29,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   userLocation,
   route,
   onSelectLocation,
-  onMapClick,
-  isMapEditorMode = false,
-  editorMarker = null,
   isDark = false
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
@@ -47,7 +41,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   const routeLayerRef = useRef<L.LayerGroup | null>(null);
   const userMarkerRef = useRef<L.Marker | null>(null);
   const userCircleRef = useRef<L.Circle | null>(null);
-  const editorMarkerRef = useRef<L.Marker | null>(null);
 
   // Map state
   const [activeTileMode, setActiveTileMode] = useState<'street' | 'satellite'>('satellite');
@@ -87,13 +80,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
     }).addTo(map);
 
     tileLayerRef.current = tileLayer;
-
-    // Click handler
-    map.on('click', (e: L.LeafletMouseEvent) => {
-      if (onMapClick) {
-        onMapClick({ lat: e.latlng.lat, lng: e.latlng.lng });
-      }
-    });
 
     // Cleanup on unmount
     return () => {
@@ -321,31 +307,6 @@ export const CampusMap: React.FC<CampusMapProps> = ({
       );
     }
   }, [selectedLocation]);
-
-  // 8. Editor Marker for Admin
-  useEffect(() => {
-    if (!mapInstanceRef.current) return;
-
-    if (isMapEditorMode && editorMarker) {
-      if (!editorMarkerRef.current) {
-        editorMarkerRef.current = L.marker([editorMarker.lat, editorMarker.lng], {
-          draggable: true
-        }).addTo(mapInstanceRef.current);
-
-        editorMarkerRef.current.on('dragend', (e: any) => {
-          const pos = e.target.getLatLng();
-          if (onMapClick) {
-            onMapClick({ lat: pos.lat, lng: pos.lng });
-          }
-        });
-      } else {
-        editorMarkerRef.current.setLatLng([editorMarker.lat, editorMarker.lng]);
-      }
-    } else if (editorMarkerRef.current) {
-      mapInstanceRef.current.removeLayer(editorMarkerRef.current);
-      editorMarkerRef.current = null;
-    }
-  }, [isMapEditorMode, editorMarker, onMapClick]);
 
   // Map Controls Callbacks
   const handleZoomIn = () => mapInstanceRef.current?.zoomIn();
