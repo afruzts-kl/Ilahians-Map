@@ -10,6 +10,26 @@
   font-family: inherit;
 }
 
+/* Malayalam Font Styles - Applied when html[lang="ml"] */
+html[lang="ml"] body,
+html[lang="ml"] * {
+  font-family: "Noto Sans Malayalam", Inter, system-ui, -apple-system, sans-serif !important;
+  line-height: 1.6 !important;
+  letter-spacing: normal !important;
+  text-transform: none !important;
+}
+
+/* Ensure proper line-height for Malayalam in all components */
+html[lang="ml"] .font-sans,
+html[lang="ml"] .font-mono,
+html[lang="ml"] input,
+html[lang="ml"] textarea,
+html[lang="ml"] select,
+html[lang="ml"] button {
+  font-family: "Noto Sans Malayalam", Inter, system-ui, -apple-system, sans-serif !important;
+  line-height: 1.6 !important;
+}
+
 .custom-map-marker {
   background: transparent;
   border: none;

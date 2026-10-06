@@ -38,6 +38,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
   // Layers
   const markersLayerRef = useRef<L.LayerGroup | null>(null);
   const buildingsLayerRef = useRef<L.LayerGroup | null>(null);
+  const blueprintsLayerRef = useRef<L.LayerGroup | null>(null);
   const routeLayerRef = useRef<L.LayerGroup | null>(null);
   const userMarkerRef = useRef<L.Marker | null>(null);
   const userCircleRef = useRef<L.Circle | null>(null);
@@ -64,6 +65,7 @@ export const CampusMap: React.FC<CampusMapProps> = ({
 
     // Layer groups
     buildingsLayerRef.current = L.layerGroup().addTo(map);
+    blueprintsLayerRef.current = L.layerGroup().addTo(map);
     routeLayerRef.current = L.layerGroup().addTo(map);
     markersLayerRef.current = L.layerGroup().addTo(map);
 
@@ -133,6 +135,36 @@ export const CampusMap: React.FC<CampusMapProps> = ({
         `, { sticky: true, className: 'custom-leaflet-tooltip' });
 
         buildingsLayerRef.current?.addLayer(poly);
+      }
+    });
+  }, [buildings]);
+
+  // 3b. Render Blueprint Overlays
+  useEffect(() => {
+    if (!blueprintsLayerRef.current || !mapInstanceRef.current) return;
+    blueprintsLayerRef.current.clearLayers();
+
+    buildings.forEach(b => {
+      if (b.blueprint_url && b.blueprint_bounds) {
+        const bounds = b.blueprint_bounds;
+        const opacity = b.blueprint_opacity ?? 0.7;
+
+        const imageOverlay = L.imageOverlay(b.blueprint_url, [
+          [bounds.north, bounds.west],
+          [bounds.south, bounds.east]
+        ], {
+          opacity,
+          interactive: false,
+          attribution: `${b.name} Floor Plan`
+        });
+
+        imageOverlay.bindTooltip(`
+          <div class="px-2 py-1 font-semibold text-xs text-gray-900">
+            ${b.name} - ${b.blueprint_floor || 'Floor Plan'}
+          </div>
+        `, { sticky: true, className: 'custom-leaflet-tooltip' });
+
+        blueprintsLayerRef.current?.addLayer(imageOverlay);
       }
     });
   }, [buildings]);

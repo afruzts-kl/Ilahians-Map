@@ -21,8 +21,10 @@ export interface CampusCoordinates {
 export interface CampusLocation {
   id: string;
   name: string;
+  name_ml?: string; // Malayalam name
   category: LocationCategory;
   description: string;
+  description_ml?: string; // Malayalam description
   latitude: number;
   longitude: number;
   building?: string;
@@ -35,6 +37,8 @@ export interface CampusLocation {
   isActive: boolean;
   aliases?: string[]; // for fuzzy search like "CSE", "civil", "mess"
   nearestNodeId?: string; // routing graph snap node
+  entranceNodeId?: string; // specific entrance node for this POI
+  area_geojson?: any; // GeoJSON Feature for drawn area
   createdAt?: string;
   updatedAt?: string;
 }
@@ -51,6 +55,11 @@ export interface CampusBuilding {
   floors?: number;
   departments?: string[];
   imageUrl?: string;
+  // Blueprint / Floor Plan Overlay
+  blueprint_url?: string;
+  blueprint_bounds?: { north: number; south: number; east: number; west: number };
+  blueprint_floor?: string;
+  blueprint_opacity?: number;
 }
 
 // Graph for Dijkstra/A* routing
@@ -73,6 +82,7 @@ export interface PathEdge {
   hasStairs?: boolean;
   surfaceType?: 'paved' | 'road' | 'stairs' | 'corridor' | 'grass';
   description?: string;
+  isOneWay?: boolean;
 }
 
 export interface DirectionStep {

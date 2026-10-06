@@ -56,6 +56,74 @@ export interface Translations {
     sharpLeft: string;
     arrived: string;
   };
+  // Location Permission Modal
+  locationPermissionTitle: string;
+  locationPermissionSubtitle: string;
+  locationPermissionDescription: string;
+  locationPermissionNote: string;
+  locationPermissionFeature1: string;
+  locationPermissionFeature2: string;
+  locationPermissionFeature3: string;
+  allowLocation: string;
+  denyLocation: string;
+  openSettings: string;
+  locationPrivacyNote: string;
+  // Share Feature
+  share: string;
+  shareTitle: string;
+  shareDescription: string;
+  copyLink: string;
+  copied: string;
+  shareWhatsApp: string;
+  shareNative: string;
+  // Admin
+  adminPortal: string;
+  adminLogin: string;
+  adminLogout: string;
+  drawArea: string;
+  uploadBlueprint: string;
+  editPaths: string;
+  validateGraph: string;
+  // POI Form
+  placeName: string;
+  placeNameML: string;
+  category: string;
+  building: string;
+  floor: string;
+  room: string;
+  latitude: string;
+  longitude: string;
+  description: string;
+  descriptionML: string;
+  openingHours: string;
+  facilities: string;
+  aliases: string;
+  wheelchairAccessible: string;
+  activeOnMap: string;
+  // Blueprint Uploader
+  selectBuilding: string;
+  selectFloor: string;
+  uploadImage: string;
+  positionOnMap: string;
+  alignCorners: string;
+  saveBlueprint: string;
+  blueprintSaved: string;
+  // Path Editor
+  addNode: string;
+  addEdge: string;
+  editMode: string;
+  viewMode: string;
+  nodes: string;
+  edges: string;
+  connected: string;
+  disconnected: string;
+  components: string;
+  // General
+  cancel: string;
+  saving: string;
+  savedSuccess: string;
+  error: string;
+  deleteConfirm: string;
 }
 
 export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
@@ -114,7 +182,75 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
       sharpRight: "Make a sharp right",
       sharpLeft: "Make a sharp left",
       arrived: "You have arrived at your destination."
-    }
+    },
+    // Location Permission Modal
+    locationPermissionTitle: "Enable Location Access",
+    locationPermissionSubtitle: "Allow ILahiaNav to access your location for the best experience",
+    locationPermissionDescription: "ILahiaNav uses your location to show your position on the campus map, provide accurate walking directions, and help you navigate to any destination.",
+    locationPermissionNote: "You can change this later in your browser settings.",
+    locationPermissionFeature1: "See your real-time position on the map",
+    locationPermissionFeature2: "Get accurate walking directions from your location",
+    locationPermissionFeature3: "Find nearest facilities and emergency exits",
+    allowLocation: "Allow Location Access",
+    denyLocation: "Not Now",
+    openSettings: "Open Browser Settings",
+    locationPrivacyNote: "Your location is only used locally and never stored on our servers.",
+    // Share Feature
+    share: "Share",
+    shareTitle: "Share Location",
+    shareDescription: "Share this location with others",
+    copyLink: "Copy Link",
+    copied: "Copied!",
+    shareWhatsApp: "Share on WhatsApp",
+    shareNative: "Share via...",
+    // Admin
+    adminPortal: "Admin Portal",
+    adminLogin: "Admin Login",
+    adminLogout: "Logout",
+    drawArea: "Draw POI Area",
+    uploadBlueprint: "Upload Blueprint",
+    editPaths: "Edit Walking Paths",
+    validateGraph: "Validate Graph",
+    // POI Form
+    placeName: "Place Name",
+    placeNameML: "Place Name (മലയാളം)",
+    category: "Category",
+    building: "Building / Block",
+    floor: "Floor",
+    room: "Room Number",
+    latitude: "Latitude",
+    longitude: "Longitude",
+    description: "Description (English)",
+    descriptionML: "Description (മലയാളം)",
+    openingHours: "Opening Hours",
+    facilities: "Facilities (comma-separated)",
+    aliases: "Search Aliases (comma-separated)",
+    wheelchairAccessible: "Wheelchair Accessible",
+    activeOnMap: "Active on Map",
+    // Blueprint Uploader
+    selectBuilding: "Select Building",
+    selectFloor: "Select Floor",
+    uploadImage: "Upload Floor Plan Image",
+    positionOnMap: "Position on Map",
+    alignCorners: "Drag 4 corner markers to align with building footprint",
+    saveBlueprint: "Save Blueprint Position",
+    blueprintSaved: "Blueprint saved successfully!",
+    // Path Editor
+    addNode: "Add Node",
+    addEdge: "Add Edge",
+    editMode: "Edit/Move",
+    viewMode: "View",
+    nodes: "Nodes",
+    edges: "Edges",
+    connected: "Fully Connected",
+    disconnected: "Disconnected Components",
+    components: "Components",
+    // General
+    cancel: "Cancel",
+    saving: "Saving...",
+    savedSuccess: "Saved successfully!",
+    error: "Error",
+    deleteConfirm: "Are you sure you want to delete this?"
   },
   ml: {
     appName: "ഇലാഹിയാനവ്",
@@ -171,6 +307,74 @@ export const TRANSLATIONS: Record<SupportedLanguage, Translations> = {
       sharpRight: "വലത്തോട്ട് കുത്തനെ തിരിയുക",
       sharpLeft: "ഇടത്തോട്ട് കുത്തനെ തിരിയുക",
       arrived: "നിങ്ങൾ ലക്ഷ്യസ്ഥാനത്ത് എത്തിച്ചേർന്നിരിക്കുന്നു."
-    }
+    },
+    // Location Permission Modal
+    locationPermissionTitle: "ലൊക്കേഷൻ പ്രാപ്തി സന്നദ്ധമാക്കുക",
+    locationPermissionSubtitle: "ILahiaNav നിങ്ങളുടെ ലൊക്കേഷൻ അറിയാൻ അനുവദിക്കുക മികച്ച അനുഭവത്തിന്",
+    locationPermissionDescription: "ILahiaNav നിങ്ങളുടെ ലൊക്കേഷൻ ഉപയോഗിച്ച് ക്യാമ്പസ് മാപ്പിൽ നിങ്ങളുടെ സ്ഥാനം കാണിക്കുകയും, കൃത്യമായ നടപ്പാത നിർദ്ദേശങ്ങൾ നൽകുകയും, ഏതു ലക്ഷ്യസ്ഥാനത്തേക്കും എളുപ്പത്തിൽ നയിക്കുകയും ചെയ്യുന്നു.",
+    locationPermissionNote: "ബ്രൗസർ സেটിംഗുകളിൽനിന്ന് പിന്നീട് ഇത് മാറ്റാം.",
+    locationPermissionFeature1: "മാപ്പിൽ നിങ്ങളുടെ റിയൽ-ടൈം സ്ഥാനം കാണുക",
+    locationPermissionFeature2: "നിങ്ങളുടെ സ്ഥാനത്തുനിന്ന് കൃത്യമായ നടപ്പാത നിർദ്ദേശങ്ങൾ ലഭിക്കുക",
+    locationPermissionFeature3: "സമീപത്തുള്ള സൗകര്യങ്ങളും അടിയന്തര വഴികൾ കണ്ടെത്തുക",
+    allowLocation: "ലൊക്കേഷൻ അനുവദിക്കുക",
+    denyLocation: "പിന്നീട്",
+    openSettings: "ബ്രൗസർ സেটിംഗ്സ് തുറക്കുക",
+    locationPrivacyNote: "നിങ്ങളുടെ ലൊക്കേഷൻ മാത്രം പ്രയോജനപ്പെടുത്തുന്നു, ഞങ്ങളുടെ സെർവറുകളിൽ സംഭരിക്കാറില്ല.",
+    // Share Feature
+    share: "പങ്കിടുക",
+    shareTitle: "സ്ഥലം പങ്കിടുക",
+    shareDescription: "ഈ സ്ഥലം മറ്റുള്ളവരുമായി പങ്കിടുക",
+    copyLink: "ലിങ്ക് കопി ചെയ്യുക",
+    copied: "കോപ്പി ചെയ്തു!",
+    shareWhatsApp: "WhatsApp-ിൽ പങ്കിടുക",
+    shareNative: "പങ്കിടുക...",
+    // Admin
+    adminPortal: "അഡ്മിൻ പോർട്ടൽ",
+    adminLogin: "അഡ്മിൻ ലോഗിൻ",
+    adminLogout: "ലോഗൗട്ട്",
+    drawArea: "പിഒഐ ഏരിയ വരയ്ക്കുക",
+    uploadBlueprint: "ബ്ലൂപ്രിന്റ് അപ്‌ലോഡ് ചെയ്യുക",
+    editPaths: "നടപ്പാതകൾ എഡിറ്റ് ചെയ്യുക",
+    validateGraph: "ഗ്രാഫ് പരിശോധിക്കുക",
+    // POI Form
+    placeName: "സ്ഥലത്തിന്റെ പേര്",
+    placeNameML: "സ്ഥലത്തിന്റെ പേര് (മലയാളം)",
+    category: "വിഭാഗം",
+    building: "ബിൽഡിംഗ് / ബ്ലോക്ക്",
+    floor: "നില",
+    room: "മുറി നമ്പർ",
+    latitude: "ലാറ്റിറ്റ്യൂഡ്",
+    longitude: "ലോन्गിറ്റ്യൂഡ്",
+    description: "വിവരണം (English)",
+    descriptionML: "വിവരണം (മലയാളം)",
+    openingHours: "വേള സമയം",
+    facilities: "സൗകര്യങ്ങൾ (കോമmalayalam-വേർതിരിക്കുക)",
+    aliases: "തിരയൽ别名 (കോമmalayalam-വേർതിരിക്കുക)",
+    wheelchairAccessible: "വീൽചെയർ പ്രാപ്തമാണ്",
+    activeOnMap: "മാപ്പിൽ സജീവം",
+    // Blueprint Uploader
+    selectBuilding: "ബിൽഡിംഗ് തിരഞ്ഞെടുക്കുക",
+    selectFloor: "നില തിരഞ്ഞെടുക്കുക",
+    uploadImage: "നിലപ്ലാൻ ചിത്രം അപ്‌ലോഡ് ചെയ്യുക",
+    positionOnMap: "മാപ്പിൽ സ്ഥാനനിർദ്ദേശം ചെയ്യുക",
+    alignCorners: "ബിൽഡിംഗ് ഫുട്പ്രിന്റിനൊപ്പം 4 കോർണർ മാർക്കറുകൾ വലിച്ചുകൊണ്ടുപോകുക",
+    saveBlueprint: "ബ്ലൂപ്രിന്റ് സ്ഥാനം സേവ് ചെയ്യുക",
+    blueprintSaved: "ബ്ലൂപ്രിന്റ് വിജയകരമായി സേവ് ചെയ്തു!",
+    // Path Editor
+    addNode: "നോഡ് ചേർക്കുക",
+    addEdge: "എഡ്ജ് ചേർക്കുക",
+    editMode: "എഡിറ്റ്/സ്ഥലം മാറ്റുക",
+    viewMode: "കാണുക",
+    nodes: "നോഡുകൾ",
+    edges: "എഡ്ജുകൾ",
+    connected: "പൂർണ്ണമായും കണക്റ്റഡ്",
+    disconnected: "ഡിസ്കണക്റ്റഡ് കമ്പോനന്റുകൾ",
+    components: "കമ്പോനന്റുകൾ",
+    // General
+    cancel: "രദ്ദാക്കുക",
+    saving: "സേവ് ചെയ്യുകയാണ്...",
+    savedSuccess: "വിജയകരമായി സേവ് ചെയ്തു!",
+    error: "പിഴവ്",
+    deleteConfirm: "ഇത് ഡിലീറ്റ് ചെയ്യാൻ ഉറപ്പാണോ?"
   }
 };

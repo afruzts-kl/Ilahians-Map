@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Lock, Mail, KeyRound, AlertCircle } from 'lucide-react';
+import { X, ShieldCheck, Lock, Mail, AlertCircle } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../../services/supabase';
 
 interface AdminLoginModalProps {
@@ -25,44 +25,42 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     setError(null);
     setLoading(true);
 
-    if (isSupabaseConfigured) {
-      try {
-        const { data, error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          password
-        });
+    if (!isSupabaseConfigured) {
+      setError('Supabase is not configured. Please add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment variables.');
+      setLoading(false);
+      return;
+    }
 
-        if (authError) {
-          setError(authError.message);
-        } else if (data?.user) {
+    try {
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (authError) {
+        setError(authError.message);
+      } else if (data?.user) {
+        // Check if user is in admin allowlist
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('user_id', data.user.id)
+          .single();
+
+        if (profile && (profile.role === 'superadmin' || profile.role === 'editor')) {
           onLoginSuccess();
           onClose();
+        } else {
+          // Sign out non-admin user
+          await supabase.auth.signOut();
+          setError('This account is not authorised.');
         }
-      } catch (err: any) {
-        setError(err.message || 'Login failed.');
-      } finally {
-        setLoading(false);
       }
-    } else {
-      // Demo authentication mode when Supabase credentials are not connected
-      if (
-        (email === 'admin@ilahia.edu' && password === 'admin123') ||
-        (email.includes('admin') && password.length >= 4)
-      ) {
-        localStorage.setItem('ilahianav_admin_session', 'true');
-        onLoginSuccess();
-        onClose();
-      } else {
-        setError('Invalid admin credentials. Use demo credentials below or configure Supabase Auth.');
-      }
+    } catch (err: any) {
+      setError(err.message || 'Login failed.');
+    } finally {
       setLoading(false);
     }
-  };
-
-  const handleDemoAdminLogin = () => {
-    localStorage.setItem('ilahianav_admin_session', 'true');
-    onLoginSuccess();
-    onClose();
   };
 
   return (
@@ -137,23 +135,11 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           </button>
         </form>
 
-        {/* Demo Login Quick Access */}
-        <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700">
-          <div className="p-3 bg-gray-50 dark:bg-gray-700/40 rounded-2xl flex items-center justify-between gap-2">
-            <div>
-              <p className="text-xs font-semibold text-gray-800 dark:text-gray-200">
-                Evaluation Demo Login
-              </p>
-              <p className="text-[11px] text-gray-400">admin@ilahia.edu / admin123</p>
-            </div>
-            <button
-              onClick={handleDemoAdminLogin}
-              className="py-1.5 px-3 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 text-gray-800 dark:text-gray-100 rounded-lg text-xs font-semibold transition-colors"
-            >
-              Demo Login
-            </button>
-          </div>
-        </div>
+        {isSupabaseConfigured && (
+          <p className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+            Don&apos;t have an account? Contact the superadmin to be added to the allowlist.
+          </p>
+        )}
       </div>
     </div>
   );

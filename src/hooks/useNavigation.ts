@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { CampusLocation, CalculatedRoute, PathNode, PathEdge, UserLocationState } from '../types';
-import { findNearestNode, findShortestPath, calculateHaversineDistance } from '../services/routing';
+import { findNearestNode, findShortestPath, calculateHaversineDistance, validateGraphConnectivity } from '../services/routing';
 import { CAMPUS_CONFIG } from '../config/campusConfig';
 
 export interface UseNavigationProps {
@@ -28,6 +28,15 @@ export function useNavigation({ userLocation, pathNodes, pathEdges, locations }:
       return;
     }
 
+    // Validate graph connectivity first (only check once per session)
+    const validation = validateGraphConnectivity(pathNodes, pathEdges);
+    if (!validation.connected && pathNodes.length > 0) {
+      setRoutingError(
+        `Campus walking network is not fully connected (${validation.components} disconnected components). ` +
+        `Some locations may not be reachable. ${validation.issues.slice(0, 3).join('; ')}`
+      );
+    }
+
     // Determine destination node
     let destNodeId = destination.nearestNodeId;
     if (!destNodeId) {
@@ -36,7 +45,7 @@ export function useNavigation({ userLocation, pathNodes, pathEdges, locations }:
     }
 
     if (!destNodeId) {
-      setRoutingError("Destination is not connected to the walkable network.");
+      setRoutingError("Destination is not connected to the walkable network. Please contact admin to add path nodes.");
       return;
     }
 
@@ -72,11 +81,23 @@ export function useNavigation({ userLocation, pathNodes, pathEdges, locations }:
     );
 
     if (!route) {
-      setRoutingError(
-        isAccessibleOnly
-          ? "No wheelchair-accessible route found. Try disabling wheelchair mode."
-          : "No walking route could be found between these campus locations."
-      );
+      // Check if nodes are in different components
+      const startComponent = getComponentId(nearestStart.id, pathNodes, pathEdges);
+      const destComponent = getComponentId(destNodeId, pathNodes, pathEdges);
+
+      if (startComponent !== destComponent) {
+        setRoutingError(
+          `No connected path exists between these locations. ` +
+          `The walking network has ${validation.components} disconnected areas. ` +
+          `Please contact admin to connect the walking paths.`
+        );
+      } else {
+        setRoutingError(
+          isAccessibleOnly
+            ? "No wheelchair-accessible route found. Try disabling wheelchair mode."
+            : "No walking route could be found between these campus locations."
+        );
+      }
       setCurrentRoute(null);
       return;
     }
@@ -85,6 +106,39 @@ export function useNavigation({ userLocation, pathNodes, pathEdges, locations }:
     setActiveStepIndex(0);
     setHasArrived(false);
   }, [destination, startPoint, userLocation, pathNodes, pathEdges, isAccessibleOnly]);
+
+// Helper to find which component a node belongs to
+function getComponentId(nodeId: string, nodes: PathNode[], edges: PathEdge[]): number {
+  const adjacency = new Map<string, string[]>();
+  for (const node of nodes) adjacency.set(node.id, []);
+  for (const edge of edges) {
+    if (edge.isRestricted) continue;
+    adjacency.get(edge.startNodeId)?.push(edge.endNodeId);
+    adjacency.get(edge.endNodeId)?.push(edge.startNodeId);
+  }
+
+  const visited = new Set<string>();
+  let component = 0;
+
+  for (const node of nodes) {
+    if (!visited.has(node.id)) {
+      component++;
+      const queue = [node.id];
+      visited.add(node.id);
+      while (queue.length > 0) {
+        const current = queue.shift()!;
+        for (const neighbor of adjacency.get(current) || []) {
+          if (!visited.has(neighbor)) {
+            visited.add(neighbor);
+            queue.push(neighbor);
+          }
+        }
+      }
+      if (visited.has(nodeId)) return component;
+    }
+  }
+  return -1;
+}
 
   // Recalculate route whenever destination, accessible toggle, or manual start point changes
   useEffect(() => {

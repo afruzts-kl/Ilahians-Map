@@ -1,19 +1,20 @@
 import React from 'react';
-import { 
-  X, 
-  Navigation, 
-  Bookmark, 
-  Clock, 
-  Building, 
-  Layers, 
-  CheckCircle2, 
-  Accessibility, 
-  Share2, 
-  MapPin, 
+import {
+  X,
+  Navigation,
+  Bookmark,
+  Clock,
+  Building,
+  Layers,
+  CheckCircle2,
+  Accessibility,
+  Share2,
+  MapPin,
   Compass
 } from 'lucide-react';
 import { CampusLocation } from '../../types';
 import { CATEGORY_INFO } from '../../config/campusConfig';
+import { ShareButton } from '../ui/ShareButton';
 
 interface LocationDetailsProps {
   location: CampusLocation | null;
@@ -35,23 +36,6 @@ export const LocationDetails: React.FC<LocationDetailsProps> = ({
   if (!location) return null;
 
   const cat = CATEGORY_INFO[location.category] || CATEGORY_INFO.academic;
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `ILahiaNav - ${location.name}`,
-          text: `Check out ${location.name} on the Ilahia College campus map!`,
-          url: window.location.href
-        });
-      } catch {
-        // Ignored or cancelled
-      }
-    } else {
-      navigator.clipboard.writeText(`${location.name} - Ilahia College (${location.latitude}, ${location.longitude})`);
-      alert('Location copied to clipboard!');
-    }
-  };
 
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-t-3xl md:rounded-2xl shadow-floating border-t md:border border-gray-200 dark:border-gray-700 p-5 transition-all max-h-[85vh] md:max-h-[calc(100vh-140px)] overflow-y-auto">
@@ -109,14 +93,7 @@ export const LocationDetails: React.FC<LocationDetailsProps> = ({
             <span>{isSaved ? 'Saved' : 'Save'}</span>
           </button>
 
-          <button
-            onClick={handleShare}
-            aria-label="Share location"
-            title="Share location"
-            className="p-3 rounded-xl border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
+          <ShareButton location={location} />
         </div>
       </div>
 

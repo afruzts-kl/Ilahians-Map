@@ -72,6 +72,68 @@ export function findNearestNode(
 }
 
 /**
+ * Check if graph is fully connected (for admin validation)
+ */
+export function validateGraphConnectivity(
+  nodes: PathNode[],
+  edges: PathEdge[]
+): { connected: boolean; components: number; issues: string[] } {
+  if (nodes.length === 0) {
+    return { connected: false, components: 0, issues: ['No nodes in graph'] };
+  }
+  if (edges.length === 0) {
+    return { connected: false, components: nodes.length, issues: ['No edges in graph - all nodes are isolated'] };
+  }
+
+  // Build adjacency
+  const adjacency = new Map<string, string[]>();
+  for (const node of nodes) {
+    adjacency.set(node.id, []);
+  }
+  for (const edge of edges) {
+    if (edge.isRestricted) continue;
+    adjacency.get(edge.startNodeId)?.push(edge.endNodeId);
+    adjacency.get(edge.endNodeId)?.push(edge.startNodeId);
+  }
+
+  // Find connected components using BFS
+  const visited = new Set<string>();
+  let components = 0;
+  const issues: string[] = [];
+
+  for (const node of nodes) {
+    if (!visited.has(node.id)) {
+      components++;
+      const queue = [node.id];
+      visited.add(node.id);
+      let componentSize = 0;
+
+      while (queue.length > 0) {
+        const current = queue.shift()!;
+        componentSize++;
+        const neighbors = adjacency.get(current) || [];
+        for (const neighbor of neighbors) {
+          if (!visited.has(neighbor)) {
+            visited.add(neighbor);
+            queue.push(neighbor);
+          }
+        }
+      }
+
+      if (componentSize === 1) {
+        issues.push(`Node "${node.name}" (${node.id}) is isolated`);
+      }
+    }
+  }
+
+  return {
+    connected: components <= 1,
+    components,
+    issues
+  };
+}
+
+/**
  * Dijkstra / A* Routing Algorithm on the Campus Walking Graph
  */
 export function findShortestPath(

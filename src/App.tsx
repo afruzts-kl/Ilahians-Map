@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useCampusLocations } from './hooks/useCampusLocations';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useNavigation } from './hooks/useNavigation';
@@ -17,12 +17,21 @@ import { CampusEventsModal } from './components/events/CampusEventsModal';
 import { Explore } from './pages/Explore';
 import { Saved } from './pages/Saved';
 import { Profile } from './pages/Profile';
+import { AdminLoginPage } from './pages/AdminLoginPage';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { AdminTopBar } from './components/admin/AdminTopBar';
+import { useAdminAuth } from './hooks/useAdminAuth';
+import { LocationPermissionModal } from './components/ui/LocationPermissionModal';
+import { useLocationPermission } from './hooks/useLocationPermission';
 
 export default function App() {
   const { theme, setTheme } = useTheme();
   const isDark = theme === 'dark';
   const { lang, toggleLanguage, t } = useLanguage();
   const [isEventsOpen, setIsEventsOpen] = useState(false);
+
+  // Admin Auth
+  const { user: adminUser, isLoading: adminLoading, isAdmin, signOut: adminSignOut } = useAdminAuth();
 
   // Campus Data
   const {
@@ -76,6 +85,32 @@ export default function App() {
   // Modals & Panels
   const [isTourOpen, setIsTourOpen] = useState(false);
 
+  // Location Permission
+  const { permission, showModal, setShowModal, handlePermissionGranted, handlePermissionDenied } = useLocationPermission();
+
+  // Deep link handling for shared POIs
+  useEffect(() => {
+    const handleDeepLink = () => {
+      const params = new URLSearchParams(window.location.search);
+      const poiId = params.get('poi');
+      const pathMatch = window.location.pathname.match(/^\/p\/(.+)$/);
+
+      if (poiId || pathMatch) {
+        const locationId = poiId || pathMatch![1];
+        const location = locations.find(l => l.id === locationId);
+        if (location) {
+          setSelectedLocation(location);
+          setDestination(location);
+          setActiveTab('map');
+          // Clean URL
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      }
+    };
+
+    handleDeepLink();
+  }, [locations, setDestination]);
+
   // Handlers
   const handleSelectLocation = useCallback((loc: CampusLocation) => {
     setSelectedLocation(loc);
@@ -92,6 +127,46 @@ export default function App() {
     setSelectedLocation(null);
   };
 
+  // Check if current path is /admin
+  const isAdminRoute = window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/');
+
+  // If on admin route, show admin UI
+  if (isAdminRoute) {
+    if (adminLoading) {
+      return (
+        <div className="flex flex-col h-screen w-screen overflow-hidden bg-gray-100 dark:bg-navy-900 font-sans text-gray-900 dark:text-gray-100">
+          <div className="flex-1 flex items-center justify-center">
+            <div className="animate-spin w-8 h-8 border-3 border-campus-600 border-t-transparent rounded-full" />
+          </div>
+        </div>
+      );
+    }
+
+    if (!isAdmin) {
+      return <AdminLoginPage />;
+    }
+
+    return (
+      <div className="flex flex-col h-screen w-screen overflow-hidden bg-gray-100 dark:bg-navy-900 font-sans text-gray-900 dark:text-gray-100">
+        <AdminTopBar user={adminUser} onSignOut={adminSignOut} />
+        <div className="flex-1 relative overflow-hidden">
+          <AdminDashboard
+            isOpen={true}
+            onClose={() => window.history.back()}
+            locations={locations}
+            buildings={buildings}
+            pathNodes={pathNodes}
+            pathEdges={pathEdges}
+            onRefreshData={refreshCampusData}
+            onLogout={adminSignOut}
+            onOpenMapEditor={() => {}}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // Public App UI
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-gray-100 dark:bg-navy-900 font-sans text-gray-900 dark:text-gray-100">
       {/* Offline Alert Banner */}
@@ -325,6 +400,14 @@ export default function App() {
         onNavigateToLocation={handleNavigateToLocation}
         lang={lang}
         events={events}
+      />
+
+      {/* Location Permission Modal (First Visit) */}
+      <LocationPermissionModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        onPermissionGranted={handlePermissionGranted}
+        onPermissionDenied={handlePermissionDenied}
       />
     </div>
   );

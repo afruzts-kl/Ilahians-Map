@@ -11,7 +11,14 @@ export function useLanguage() {
   useEffect(() => {
     localStorage.setItem('ilahianav_lang', lang);
     voiceGuidance.setLanguage(lang);
+    // Set html lang attribute for accessibility and font selection
+    document.documentElement.lang = lang;
   }, [lang]);
+
+  // Set initial lang on mount
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, []);
 
   const toggleLanguage = useCallback(() => {
     setLang(prev => (prev === 'en' ? 'ml' : 'en'));

@@ -1,14 +1,14 @@
 import { CampusLocation, CampusBuilding, PathNode, PathEdge, CampusEvent } from '../types';
 import { SEED_LOCATIONS, SEED_BUILDINGS, SEED_NODES, SEED_EDGES, SEED_CAMPUS_EVENTS } from '../data/seedCampusData';
-import { supabase, isSupabaseConfigured } from './supabase';
+import { supabase, isSupabaseConfigured, getSupabaseClient } from './supabase';
 
 const STORAGE_KEYS = {
-  LOCATIONS: 'ilahianav_locations_v1',
-  BUILDINGS: 'ilahianav_buildings_v1',
-  NODES: 'ilahianav_nodes_v1',
-  EDGES: 'ilahianav_edges_v1',
-  SAVED: 'ilahianav_saved_ids_v1',
-  EVENTS: 'ilahianav_events_v1'
+  LOCATIONS: 'ilahianav_v2_locations',
+  BUILDINGS: 'ilahianav_v2_buildings',
+  NODES: 'ilahianav_v2_nodes',
+  EDGES: 'ilahianav_v2_edges',
+  SAVED: 'ilahianav_v2_saved_ids',
+  EVENTS: 'ilahianav_v2_events'
 };
 
 /**
@@ -85,7 +85,11 @@ export const locationService = {
             floors: b.floors,
             departments: b.departments,
             polygon: b.polygon_data,
-            imageUrl: b.image_url
+            imageUrl: b.image_url,
+            blueprint_url: b.blueprint_url,
+            blueprint_bounds: b.blueprint_bounds,
+            blueprint_floor: b.blueprint_floor,
+            blueprint_opacity: b.blueprint_opacity
           }));
         }
       } catch (err) {
@@ -220,7 +224,7 @@ export const locationService = {
 
     if (isSupabaseConfigured) {
       try {
-        await supabase.from('locations').upsert({
+        await getSupabaseClient().from('locations').upsert({
           id: location.id,
           name: location.name,
           category: location.category,
@@ -254,7 +258,7 @@ export const locationService = {
 
     if (isSupabaseConfigured) {
       try {
-        await supabase.from('locations').delete().eq('id', id);
+        await getSupabaseClient().from('locations').delete().eq('id', id);
       } catch (e) {
         console.error('Supabase location delete error', e);
       }
@@ -288,7 +292,46 @@ export const locationService = {
     return edge;
   },
 
-  // 6. Saved / Bookmarked Locations
+  // 6. Admin Building Management (for blueprints)
+  async saveBuilding(building: CampusBuilding): Promise<CampusBuilding> {
+    const buildings = await this.getBuildings();
+    const idx = buildings.findIndex(b => b.id === building.id);
+    if (idx >= 0) {
+      buildings[idx] = building;
+    } else {
+      buildings.push(building);
+    }
+    localStorage.setItem(STORAGE_KEYS.BUILDINGS, JSON.stringify(buildings));
+
+    if (isSupabaseConfigured) {
+      try {
+        await getSupabaseClient().from('buildings').upsert({
+          id: building.id,
+          name: building.name,
+          code: building.code,
+          description: building.description,
+          latitude: building.latitude,
+          longitude: building.longitude,
+          category: building.category,
+          floors: building.floors,
+          departments: building.departments,
+          polygon_data: building.polygon,
+          image_url: building.imageUrl,
+          blueprint_url: building.blueprint_url,
+          blueprint_bounds: building.blueprint_bounds,
+          blueprint_floor: building.blueprint_floor,
+          blueprint_opacity: building.blueprint_opacity,
+          updated_at: new Date().toISOString()
+        });
+      } catch (e) {
+        console.error('Supabase building sync error', e);
+      }
+    }
+
+    return building;
+  },
+
+  // 7. Saved / Bookmarked Locations
   getSavedLocationIds(): string[] {
     try {
       const data = localStorage.getItem(STORAGE_KEYS.SAVED);
