@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Lock, Mail, AlertCircle, Chrome } from 'lucide-react';
+import { X, ShieldCheck, Lock, Mail, AlertCircle, Globe } from 'lucide-react';
 import { useAdminAuth } from '../hooks/useAdminAuth';
 import { isSupabaseConfigured } from '../services/supabase';
 
@@ -155,7 +155,7 @@ export const AdminLoginPage: React.FC = () => {
           disabled={loading || authLoading}
           className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold transition-colors disabled:opacity-50"
         >
-          <Chrome className="w-5 h-5" />
+          <Globe className="w-5 h-5" />
           <span>Sign in with Google</span>
         </button>
 
