@@ -148,7 +148,7 @@ export default function App() {
 
     return (
       <div className="flex flex-col h-screen w-screen overflow-hidden bg-gray-100 dark:bg-navy-900 font-sans text-gray-900 dark:text-gray-100">
-        <AdminTopBar user={adminUser} onSignOut={adminSignOut} />
+        {adminUser && <AdminTopBar user={adminUser} onSignOut={adminSignOut} />}
         <div className="flex-1 relative overflow-hidden">
           <AdminDashboard
             isOpen={true}
