@@ -195,20 +195,18 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
   };
 
   const layerToArea = (layer: L.Layer): DrawnArea | null => {
-    let coordinates: L.LatLngExpression[] = [];
+    let coordinates: L.LatLngTuple[] = [];
     let type: 'polygon' | 'rectangle' = 'polygon';
 
     if (layer instanceof L.Polygon) {
       const latLngs = layer.getLatLngs();
-      if (latLngs.length > 0 && Array.isArray(latLngs[0])) {
-        // Polygon with holes - take outer ring
-        coordinates = latLngs[0] as L.LatLngExpression[];
-      } else {
-        coordinates = latLngs as L.LatLngExpression[];
-      }
+      // Leaflet returns an array of LatLng objects (or nested arrays for polygons with holes).
+      // Take the outer ring if present.
+      const outer = Array.isArray(latLngs[0]) ? (latLngs[0] as L.LatLng[]) : (latLngs as L.LatLng[]);
+      coordinates = outer.map((ll) => [ll.lat, ll.lng] as L.LatLngTuple);
       type = 'polygon';
-    // Rectangle handling removed; using polygon logic
     } else {
+      // Unsupported layer type
       return null;
     }
 
@@ -219,11 +217,11 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
       id: `area-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       type,
       coordinates,
-      centroid
+      centroid,
     };
   };
 
-  const calculateCentroid = (coords: L.LatLngExpression[]): L.LatLngExpression => {
+  const calculateCentroid = (coords: L.LatLngTuple[]): L.LatLngTuple => {
     if (coords.length === 0) return [0, 0];
     if (coords.length === 1) return coords[0];
 

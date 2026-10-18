@@ -77,7 +77,7 @@ export function useAdminAuth(): AdminAuthState {
       if (session?.user) {
         fetchProfile(session.user.id).then(profile => {
           if (profile) {
-            setUser({ ...profile, email: session.user.email });
+            setUser({ ...profile, email: session.user.email ?? '' });
           }
         });
       }
@@ -90,7 +90,7 @@ export function useAdminAuth(): AdminAuthState {
       if (session?.user) {
         const profile = await fetchProfile(session.user.id);
         if (profile) {
-          setUser({ ...profile, email: session.user.email });
+          setUser({ ...profile, email: session.user.email ?? '' });
         } else {
           // Not an admin - sign out
           setUser(null);

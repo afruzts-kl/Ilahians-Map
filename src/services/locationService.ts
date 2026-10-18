@@ -113,9 +113,10 @@ export const locationService = {
   async getRoutingGraph(): Promise<{ nodes: PathNode[]; edges: PathEdge[] }> {
     if (isSupabaseConfigured) {
       try {
+        const client = getSupabaseClient();
         const [nodesRes, edgesRes] = await Promise.all([
-          supabase.from('path_nodes').select('*'),
-          supabase.from('path_edges').select('*')
+          client.from('path_nodes').select('*'),
+          client.from('path_edges').select('*')
         ]);
 
         if (!nodesRes.error && !edgesRes.error && nodesRes.data && edgesRes.data) {

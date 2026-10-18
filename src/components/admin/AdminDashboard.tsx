@@ -110,6 +110,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 };
 
   // GeoJSON Download
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (editingLocation) {
+      handleSaveLocation(editingLocation);
+    }
+  };
+
   const handleExportGeoJSON = () => {
     const geoJsonStr = locationService.exportGeoJSON(locations);
     const blob = new Blob([geoJsonStr], { type: 'application/json' });
@@ -625,7 +633,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
-              <form onSubmit={handleSaveLocation} className="space-y-4 text-xs sm:text-sm">
+              <form onSubmit={handleFormSubmit} className="space-y-4 text-xs sm:text-sm">
                 <div>
                   <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Place Name *
