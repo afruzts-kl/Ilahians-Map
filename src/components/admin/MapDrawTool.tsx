@@ -15,8 +15,8 @@ L.Icon.Default.mergeOptions({
 export interface DrawnArea {
   id: string;
   type: 'polygon' | 'rectangle';
-  coordinates: L.LatLngExpression[];
-  centroid: L.LatLngExpression;
+  coordinates: L.LatLngTuple[];
+  centroid: L.LatLngTuple;
   name?: string;
 }
 
