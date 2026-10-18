@@ -15,8 +15,8 @@ L.Icon.Default.mergeOptions({
 export interface DrawnArea {
   id: string;
   type: 'polygon' | 'rectangle';
-  coordinates: L.LatLngExpression[];
-  centroid: L.LatLngExpression;
+  coordinates: L.LatLngTuple[];
+  centroid: L.LatLngTuple;
   name?: string;
 }
 
@@ -37,7 +37,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
   existingAreas,
   onClose
 }) => {
-  const drawControlRef = useRef<L.Control.Draw | null>(null);
+  const drawControlRef = useRef<any>(null);
   const drawnItemsRef = useRef<L.FeatureGroup | null>(null);
   const [drawMode, setDrawMode] = useState<'polygon' | 'rectangle' | null>(null);
   const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
@@ -108,7 +108,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
     drawControlRef.current = drawControl;
 
     // Event handlers
-    const handleDrawCreated = (e: L.DrawEvents.Created) => {
+    const handleDrawCreated = (e: any) => {
       const layer = e.layer;
       const area = layerToArea(layer);
       if (area) {
@@ -119,7 +119,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
       setDrawMode(null);
     };
 
-    const handleDrawEdited = (e: L.DrawEvents.Edited) => {
+    const handleDrawEdited = (e: any) => {
       const layers = e.layers;
       layers.eachLayer((layer: any) => {
         if (layer._areaId) {
@@ -132,7 +132,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
       });
     };
 
-    const handleDrawDeleted = (e: L.DrawEvents.Deleted) => {
+    const handleDrawDeleted = (e: any) => {
       const layers = e.layers;
       layers.eachLayer((layer: any) => {
         if (layer._areaId) {
@@ -171,7 +171,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
   }, [existingAreas, map]);
 
   const createAreaLayer = (area: DrawnArea): L.Layer => {
-    let layer: L.Polygon | L.Rectangle;
+    let layer: L.Layer;
     if (area.type === 'rectangle' && area.coordinates.length === 2) {
       layer = L.rectangle(area.coordinates as L.LatLngBoundsExpression, {
         color: '#16a34a',
@@ -195,26 +195,18 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
   };
 
   const layerToArea = (layer: L.Layer): DrawnArea | null => {
-    let coordinates: L.LatLngExpression[] = [];
+    let coordinates: L.LatLngTuple[] = [];
     let type: 'polygon' | 'rectangle' = 'polygon';
 
     if (layer instanceof L.Polygon) {
       const latLngs = layer.getLatLngs();
-      if (latLngs.length > 0 && Array.isArray(latLngs[0])) {
-        // Polygon with holes - take outer ring
-        coordinates = latLngs[0] as L.LatLngExpression[];
-      } else {
-        coordinates = latLngs as L.LatLngExpression[];
-      }
+      // Leaflet returns an array of LatLng objects (or nested arrays for polygons with holes).
+      // Take the outer ring if present.
+      const outer = Array.isArray(latLngs[0]) ? (latLngs[0] as L.LatLng[]) : (latLngs as L.LatLng[]);
+      coordinates = outer.map((ll) => [ll.lat, ll.lng] as L.LatLngTuple);
       type = 'polygon';
-    } else if (layer instanceof L.Rectangle) {
-      const bounds = layer.getBounds();
-      coordinates = [
-        [bounds.getNorthWest().lat, bounds.getNorthWest().lng],
-        [bounds.getSouthEast().lat, bounds.getSouthEast().lng]
-      ];
-      type = 'rectangle';
     } else {
+      // Unsupported layer type
       return null;
     }
 
@@ -225,11 +217,11 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
       id: `area-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       type,
       coordinates,
-      centroid
+      centroid,
     };
   };
 
-  const calculateCentroid = (coords: L.LatLngExpression[]): L.LatLngExpression => {
+  const calculateCentroid = (coords: L.LatLngTuple[]): L.LatLngTuple => {
     if (coords.length === 0) return [0, 0];
     if (coords.length === 1) return coords[0];
 

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Upload, Image, MapPin, Check, Loader2, Trash2, RotateCcw, Maximize, Minimize, Download, AlertCircle } from 'lucide-react';
+import { X, Upload, Image, MapPin, Check, Loader2, Trash2, RotateCcw, AlertCircle, Save } from 'lucide-react';
+import L, { LatLngTuple } from 'leaflet';
 import { CampusBuilding } from '../../types';
 import { getSupabaseClient, isSupabaseConfigured } from '../../services/supabase';
 
@@ -54,7 +55,7 @@ export const BlueprintUploader: React.FC<BlueprintUploaderProps> = ({
       });
 
       const building = buildings.find(b => b.id === selectedBuilding);
-      const center = building ? [building.latitude, building.longitude] : [10.02835, 76.59715];
+      const center: LatLngTuple = building ? [building.latitude, building.longitude] : [10.02835, 76.59715];
 
       const map = L.map(mapContainerRef.current!, {
         center: center,

@@ -9,7 +9,6 @@ import {
   Edit3,
   Trash2,
   Download,
-  Upload,
   Check,
   AlertCircle,
   Eye,
@@ -18,7 +17,6 @@ import {
   Image,
   Link,
   RotateCcw,
-  Save,
   Loader2
 } from 'lucide-react';
 import { CampusLocation, CampusBuilding, PathNode, PathEdge, LocationCategory } from '../../types';
@@ -101,19 +99,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
   };
 
-  const handleSaveLocation = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingLocation || !editingLocation.name) return;
-
-    await locationService.saveLocation(editingLocation as CampusLocation);
-    setIsFormOpen(false);
-    setEditingLocation(null);
-    setSaveSuccess('Location successfully saved!');
-    setTimeout(() => setSaveSuccess(null), 3000);
-    onRefreshData();
-  };
+  const handleSaveLocation = async (location: Partial<CampusLocation>) => {
+  if (!location || !location.name) return;
+  await locationService.saveLocation(location as CampusLocation);
+  setIsFormOpen(false);
+  setEditingLocation(null);
+  setSaveSuccess('Location successfully saved!');
+  setTimeout(() => setSaveSuccess(null), 3000);
+  onRefreshData();
+};
 
   // GeoJSON Download
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (editingLocation) {
+      handleSaveLocation(editingLocation);
+    }
+  };
+
   const handleExportGeoJSON = () => {
     const geoJsonStr = locationService.exportGeoJSON(locations);
     const blob = new Blob([geoJsonStr], { type: 'application/json' });
@@ -629,7 +633,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </button>
               </div>
 
-              <form onSubmit={handleSaveLocation} className="space-y-4 text-xs sm:text-sm">
+              <form onSubmit={handleFormSubmit} className="space-y-4 text-xs sm:text-sm">
                 <div>
                   <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Place Name *

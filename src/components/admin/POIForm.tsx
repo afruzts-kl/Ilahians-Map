@@ -43,7 +43,7 @@ export const POIForm: React.FC<POIFormProps> = ({
     facilities: [],
     aliases: [],
     area_geojson: undefined,
-    entrance_node_id: undefined
+    entranceNodeId: undefined
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -59,7 +59,7 @@ export const POIForm: React.FC<POIFormProps> = ({
         facilities: editingLocation.facilities || [],
         aliases: editingLocation.aliases || [],
         area_geojson: editingLocation.area_geojson,
-        entrance_node_id: editingLocation.entrance_node_id
+        entranceNodeId: editingLocation.entranceNodeId
       });
     } else if (drawnArea) {
       // Auto-fill from drawn area
@@ -110,7 +110,7 @@ export const POIForm: React.FC<POIFormProps> = ({
         facilities: [],
         aliases: [],
         area_geojson: undefined,
-        entrance_node_id: undefined
+        entranceNodeId: undefined
       });
     }
     setErrors({});
@@ -267,7 +267,7 @@ export const POIForm: React.FC<POIFormProps> = ({
                 onChange={(e) => handleChange('name_ml', e.target.value)}
                 className={`w-full p-2.5 rounded-xl border ${
                   errors.name_ml ? 'border-red-300 dark:border-red-700' : 'border-gray-200 dark:border-gray-700'
-                } bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-campus-500 focus:outline-none font-[\"Noto_Sans_Malayalam\"]`}
+                } bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-campus-500 focus:outline-none font-['Noto_Sans_Malayalam']`}
                 placeholder="e.g. സിഎസ്ഇ പ്രോജക്റ്റ് ല্যാബ്"
               />
               {errors.name_ml && <p className="mt-1 text-xs text-red-500 flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.name_ml}</p>}
@@ -402,7 +402,7 @@ export const POIForm: React.FC<POIFormProps> = ({
                 rows={3}
                 value={formData.description_ml || ''}
                 onChange={(e) => handleChange('description_ml', e.target.value)}
-                className="w-full p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none font-[\"Noto_Sans_Malayalam\"]"
+                className="w-full p-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none font-['Noto_Sans_Malayalam']"
                 placeholder="ഈ സൗകര്യം, ഓഫീസ്, അല്ലെങ്കിൽ പോയിന്റ് ഓഫ് ഇന്ററസ്റ്റ് എന്നീവയുടെ ലഘു വിവരണം..."
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Used for Malayalam voice guidance and search</p>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, ShieldCheck, Lock, Mail, AlertCircle } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '../../services/supabase';
+import { isSupabaseConfigured, getSupabaseClient } from '../../services/supabase';
 
 interface AdminLoginModalProps {
   isOpen: boolean;
@@ -32,7 +32,8 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
     }
 
     try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
+      const client = getSupabaseClient();
+      const { data, error: authError } = await client.auth.signInWithPassword({
         email,
         password
       });
@@ -41,7 +42,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
         setError(authError.message);
       } else if (data?.user) {
         // Check if user is in admin allowlist
-        const { data: profile } = await supabase
+        const { data: profile } = await client
           .from('profiles')
           .select('role')
           .eq('user_id', data.user.id)
@@ -52,7 +53,7 @@ export const AdminLoginModal: React.FC<AdminLoginModalProps> = ({
           onClose();
         } else {
           // Sign out non-admin user
-          await supabase.auth.signOut();
+          await client.auth.signOut();
           setError('This account is not authorised.');
         }
       }
