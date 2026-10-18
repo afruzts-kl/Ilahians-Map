@@ -43,7 +43,7 @@ export const POIForm: React.FC<POIFormProps> = ({
     facilities: [],
     aliases: [],
     area_geojson: undefined,
-    entrance_node_id: undefined
+    entranceNodeId: undefined
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [saving, setSaving] = useState(false);
@@ -59,7 +59,7 @@ export const POIForm: React.FC<POIFormProps> = ({
         facilities: editingLocation.facilities || [],
         aliases: editingLocation.aliases || [],
         area_geojson: editingLocation.area_geojson,
-        entrance_node_id: editingLocation.entrance_node_id
+        entranceNodeId: editingLocation.entranceNodeId
       });
     } else if (drawnArea) {
       // Auto-fill from drawn area
@@ -110,7 +110,7 @@ export const POIForm: React.FC<POIFormProps> = ({
         facilities: [],
         aliases: [],
         area_geojson: undefined,
-        entrance_node_id: undefined
+        entranceNodeId: undefined
       });
     }
     setErrors({});

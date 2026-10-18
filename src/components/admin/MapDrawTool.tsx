@@ -37,7 +37,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
   existingAreas,
   onClose
 }) => {
-  const drawControlRef = useRef<L.Control.Draw | null>(null);
+  const drawControlRef = useRef<any>(null);
   const drawnItemsRef = useRef<L.FeatureGroup | null>(null);
   const [drawMode, setDrawMode] = useState<'polygon' | 'rectangle' | null>(null);
   const [editingAreaId, setEditingAreaId] = useState<string | null>(null);
@@ -108,7 +108,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
     drawControlRef.current = drawControl;
 
     // Event handlers
-    const handleDrawCreated = (e: L.DrawEvents.Created) => {
+    const handleDrawCreated = (e: any) => {
       const layer = e.layer;
       const area = layerToArea(layer);
       if (area) {
@@ -119,7 +119,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
       setDrawMode(null);
     };
 
-    const handleDrawEdited = (e: L.DrawEvents.Edited) => {
+    const handleDrawEdited = (e: any) => {
       const layers = e.layers;
       layers.eachLayer((layer: any) => {
         if (layer._areaId) {
@@ -132,7 +132,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
       });
     };
 
-    const handleDrawDeleted = (e: L.DrawEvents.Deleted) => {
+    const handleDrawDeleted = (e: any) => {
       const layers = e.layers;
       layers.eachLayer((layer: any) => {
         if (layer._areaId) {
@@ -171,7 +171,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
   }, [existingAreas, map]);
 
   const createAreaLayer = (area: DrawnArea): L.Layer => {
-    let layer: L.Polygon | L.Rectangle;
+    let layer: L.Layer;
     if (area.type === 'rectangle' && area.coordinates.length === 2) {
       layer = L.rectangle(area.coordinates as L.LatLngBoundsExpression, {
         color: '#16a34a',
@@ -207,13 +207,7 @@ export const MapDrawTool: React.FC<MapDrawToolProps> = ({
         coordinates = latLngs as L.LatLngExpression[];
       }
       type = 'polygon';
-    } else if (layer instanceof L.Rectangle) {
-      const bounds = layer.getBounds();
-      coordinates = [
-        [bounds.getNorthWest().lat, bounds.getNorthWest().lng],
-        [bounds.getSouthEast().lat, bounds.getSouthEast().lng]
-      ];
-      type = 'rectangle';
+    // Rectangle handling removed; using polygon logic
     } else {
       return null;
     }

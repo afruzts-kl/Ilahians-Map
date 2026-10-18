@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase, isSupabaseConfigured, getSupabaseClient } from '../services/supabase';
+import { isSupabaseConfigured, getSupabaseClient } from '../services/supabase';
 
 export interface AdminUser {
   id: string;

@@ -1,6 +1,6 @@
 import { CampusLocation, CampusBuilding, PathNode, PathEdge, CampusEvent } from '../types';
 import { SEED_LOCATIONS, SEED_BUILDINGS, SEED_NODES, SEED_EDGES, SEED_CAMPUS_EVENTS } from '../data/seedCampusData';
-import { supabase, isSupabaseConfigured, getSupabaseClient } from './supabase';
+import { isSupabaseConfigured, getSupabaseClient } from './supabase';
 
 const STORAGE_KEYS = {
   LOCATIONS: 'ilahianav_v2_locations',
@@ -21,7 +21,7 @@ export const locationService = {
   async getLocations(): Promise<CampusLocation[]> {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseClient()
           .from('locations')
           .select('*')
           .order('name');
@@ -69,7 +69,7 @@ export const locationService = {
   async getBuildings(): Promise<CampusBuilding[]> {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase
+        const { data, error } = await getSupabaseClient()
           .from('buildings')
           .select('*')
           .order('name');
@@ -175,10 +175,7 @@ export const locationService = {
   async getEvents(): Promise<CampusEvent[]> {
     if (isSupabaseConfigured) {
       try {
-        const { data, error } = await supabase
-          .from('events')
-          .select('*')
-          .order('date');
+        const { data, error } = await getSupabaseClient().from('events').select('*').order('date');
         if (!error && data && data.length > 0) {
           return data.map((item: any) => ({
             id: item.id,

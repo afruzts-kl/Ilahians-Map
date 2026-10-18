@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, Upload, Image, MapPin, Check, Loader2, Trash2, RotateCcw, Maximize, Minimize, Download, AlertCircle } from 'lucide-react';
+import { X, Upload, Image, MapPin, Check, Loader2, Trash2, RotateCcw, AlertCircle, Save } from 'lucide-react';
+import L from 'leaflet';
 import { CampusBuilding } from '../../types';
 import { getSupabaseClient, isSupabaseConfigured } from '../../services/supabase';
 
